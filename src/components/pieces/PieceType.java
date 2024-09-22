@@ -1,6 +1,6 @@
-package components;
+package components.pieces;
 
-public enum Piece {
+public enum PieceType {
     PAWN,
     BISHOP,
     KNIGHT,
