@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class GamePanel extends JPanel implements Runnable {
 
@@ -16,11 +17,17 @@ public class GamePanel extends JPanel implements Runnable {
     Color currentColor = Color.WHITE;
     public static ArrayList<Piece> pieces = new ArrayList<>();
     public static ArrayList<Piece> simPieces = new ArrayList<>();
+    Piece selectedPiece;
+
     ChessBoard board = new ChessBoard();
+    Mouse mouse = new Mouse();
 
     public GamePanel() throws IOException {
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
         setBackground(java.awt.Color.BLACK);
+
+        addMouseMotionListener(mouse);
+        addMouseListener(mouse);
 
         initializePieces(Color.WHITE);
         initializePieces(Color.BLACK);
@@ -54,7 +61,42 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     private void update() {
+        if (mouse.pressed) {
+            if (selectedPiece == null) {
+                List<Piece> list = pieces.stream().filter(p -> {
+                    if (p.col == mouse.x / ChessBoard.SQUARE_SIZE &&
+                            p.row == mouse.y / ChessBoard.SQUARE_SIZE) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }).toList();
 
+                if (list.isEmpty()) {
+                    return;
+                } else {
+                    selectedPiece = list.get(0);
+                    System.out.println("Selected piece");
+                }
+            } else {
+                simulate();
+            }
+        }
+
+        if (!mouse.pressed && selectedPiece != null) {
+            if (selectedPiece.legalMove(mouse.x/ChessBoard.SQUARE_SIZE, mouse.y/ChessBoard.SQUARE_SIZE)) {
+                selectedPiece.update(mouse.x, mouse.y);
+            } else {
+                selectedPiece.resetPosition();
+            }
+            selectedPiece = null;
+            System.out.println("Unselect");
+        }
+    }
+
+    private void simulate() {
+        selectedPiece.x = mouse.x - ChessBoard.SQUARE_SIZE/2;
+        selectedPiece.y = mouse.y - ChessBoard.SQUARE_SIZE/2;
     }
 
     private void initializePieces(Color color) {
@@ -95,6 +137,19 @@ public class GamePanel extends JPanel implements Runnable {
 
         for (Piece p : simPieces) {
             p.draw(g2);
+        }
+
+        if (selectedPiece != null) {
+            g2.setColor(java.awt.Color.WHITE);
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.8f));
+            g2.fillRect(
+                    (mouse.x / ChessBoard.SQUARE_SIZE) * ChessBoard.SQUARE_SIZE,
+                    (mouse.y / ChessBoard.SQUARE_SIZE) * ChessBoard.SQUARE_SIZE,
+                    ChessBoard.SQUARE_SIZE,
+                    ChessBoard.SQUARE_SIZE
+            );
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
+            selectedPiece.draw(g2);
         }
     }
 }
