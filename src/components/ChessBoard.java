@@ -9,7 +9,7 @@ import java.io.IOException;
 public class ChessBoard {
 
     final int FILE = 8, RANK = 8;
-    public static final int SQUARE_SIZE = 100;
+    public static final int SQUARE_SIZE = 90;
 
     public static final String RESOURCES_SQUARE_DARK_PNG = "resources/square_dark.png";
     public static final String RESOURCES_SQUARE_LIGHT_PNG = "resources/square_light.png";
