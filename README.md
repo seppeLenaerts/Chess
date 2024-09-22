@@ -13,3 +13,6 @@ Lots of stuff to do.
     - [ ] King
 - [ ] Allow capturing of other pieces
     - [ ] Preferably only of the enemy color
+- [ ] Castling
+- [ ] Checkmate recognition
+- [ ] Stalemate recognition
