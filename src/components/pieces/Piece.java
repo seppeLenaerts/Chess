@@ -16,7 +16,7 @@ public class Piece {
     public int x, y;
     public int col, row;
     public int preCol, preRow;
-    Color color;
+    public Color color;
 
     public Piece(int col, int row, Color color) {
         this.col = col;
@@ -65,10 +65,6 @@ public class Piece {
     public void resetPosition() {
         this.x = getX();
         this.y = getY();
-    }
-
-    public BufferedImage getImage() {
-        return image;
     }
 
     public void setImage(BufferedImage image) {

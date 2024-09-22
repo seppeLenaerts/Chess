@@ -22,7 +22,7 @@ public class GamePanel extends JPanel implements Runnable {
     ChessBoard board = new ChessBoard();
     Mouse mouse = new Mouse();
 
-    public GamePanel() throws IOException {
+    public GamePanel() {
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
         setBackground(java.awt.Color.BLACK);
 
@@ -42,7 +42,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     @Override
     public void run() {
-        double drawInterval = 1000000000/FPS;
+        double drawInterval = (double) 1000000000/FPS;
         double delta = 0;
         long lastTime = System.nanoTime();
         long currTime;
@@ -63,15 +63,11 @@ public class GamePanel extends JPanel implements Runnable {
     private void update() {
         if (mouse.pressed) {
             if (selectedPiece == null) {
-                List<Piece> list = pieces.stream().filter(p -> {
-                    if (p.col == mouse.x / ChessBoard.SQUARE_SIZE &&
-                            p.row == mouse.y / ChessBoard.SQUARE_SIZE) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }).toList();
-
+                List<Piece> list = pieces.stream().filter(p ->
+                        p.col == mouse.x / ChessBoard.SQUARE_SIZE
+                        && p.row == mouse.y / ChessBoard.SQUARE_SIZE
+                        && p.color.equals(currentColor)
+                ).toList();
                 if (list.isEmpty()) {
                     return;
                 } else {
@@ -86,6 +82,7 @@ public class GamePanel extends JPanel implements Runnable {
         if (!mouse.pressed && selectedPiece != null) {
             if (selectedPiece.legalMove(mouse.x/ChessBoard.SQUARE_SIZE, mouse.y/ChessBoard.SQUARE_SIZE)) {
                 selectedPiece.update(mouse.x, mouse.y);
+                currentColor = currentColor.equals(Color.WHITE) ? Color.BLACK : Color.WHITE;
             } else {
                 selectedPiece.resetPosition();
             }
