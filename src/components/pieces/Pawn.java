@@ -10,9 +10,9 @@ public class Pawn extends Piece {
     @Override
     public boolean legalMove(int col, int row) {
         if (color.equals(Color.WHITE)) {
-            return preCol == col && preRow > row;
+            return preCol == col && (preRow - 1 == row || (firstMove && preRow - 2 == row));
         } else {
-            return preCol == col && preRow < row;
+            return preCol == col && (preRow + 1 == row || (firstMove && preRow + 2 == row));
         }
     }
 }

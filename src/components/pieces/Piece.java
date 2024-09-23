@@ -9,7 +9,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-public class Piece {
+public class Piece implements Cloneable {
     public static final String RESOURCE_PATH = "resources/%s_%s.png";
 
     public BufferedImage image;
@@ -17,6 +17,7 @@ public class Piece {
     public int col, row;
     public int preCol, preRow;
     public Color color;
+    public boolean firstMove = true;
 
     public Piece(int col, int row, Color color) {
         this.col = col;
@@ -56,6 +57,9 @@ public class Piece {
         row = getRow();
         preCol = col;
         preRow = row;
+
+        if (firstMove)
+            firstMove = false;
     }
 
     public boolean legalMove(int col, int row) {
@@ -73,5 +77,14 @@ public class Piece {
 
     public void draw(Graphics2D g2) {
         g2.drawImage(image, x, y, ChessBoard.SQUARE_SIZE, ChessBoard.SQUARE_SIZE, null);
+    }
+
+    @Override
+    public Piece clone() {
+        try {
+            return (Piece) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }

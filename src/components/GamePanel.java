@@ -63,7 +63,7 @@ public class GamePanel extends JPanel implements Runnable {
     private void update() {
         if (mouse.pressed) {
             if (selectedPiece == null) {
-                List<Piece> list = pieces.stream().filter(p ->
+                List<Piece> list = simPieces.stream().filter(p ->
                         p.col == mouse.x / ChessBoard.SQUARE_SIZE
                         && p.row == mouse.y / ChessBoard.SQUARE_SIZE
                         && p.color.equals(currentColor)
@@ -72,7 +72,6 @@ public class GamePanel extends JPanel implements Runnable {
                     return;
                 } else {
                     selectedPiece = list.get(0);
-                    System.out.println("Selected piece");
                 }
             } else {
                 simulate();
@@ -86,8 +85,8 @@ public class GamePanel extends JPanel implements Runnable {
             } else {
                 selectedPiece.resetPosition();
             }
+            copyPieces(simPieces, pieces);
             selectedPiece = null;
-            System.out.println("Unselect");
         }
     }
 
@@ -118,7 +117,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     private void copyPieces(ArrayList<Piece> source, ArrayList<Piece> target) {
         target.clear();
-        target.addAll(source);
+        source.forEach(p -> target.add(p.clone()));
     }
 
     @Override
@@ -148,5 +147,13 @@ public class GamePanel extends JPanel implements Runnable {
             g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
             selectedPiece.draw(g2);
         }
+
+        if (currentColor.equals(Color.BLACK)) {
+            g2.drawString("Black's turn", 850,200);
+        } else {
+            g2.drawString("White's turn", 850,200);
+        }
+
+        g2.dispose();
     }
 }
