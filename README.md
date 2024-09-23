@@ -13,7 +13,7 @@ Lots of stuff to do.
     - [x] King
 - [ ] Implement disallowing moves that jump over other pieces
 - [ ] Wait no the knight should do it 
-- [ ] Allow capturing of other pieces
+- [x] Allow capturing of other pieces
   - Preferably only of the enemy color
 - [ ] Castling
 - [ ] Checkmate recognition
