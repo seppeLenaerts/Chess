@@ -22,6 +22,9 @@ public class GamePanel extends JPanel implements Runnable {
     ChessBoard board = new ChessBoard();
     Mouse mouse = new Mouse();
 
+    int whiteScore = 0;
+    int blackScore = 0;
+
     public GamePanel() {
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
         setBackground(java.awt.Color.BLACK);
@@ -102,6 +105,11 @@ public class GamePanel extends JPanel implements Runnable {
         } else {
             if (capturingPiece != null) {
                 simPieces.remove(capturingPiece);
+                if (capturingPiece.color.equals(Color.WHITE)) {
+                    blackScore += capturingPiece.value;
+                } else {
+                    whiteScore += capturingPiece.value;
+                }
             }
             selectedPiece.update(mouse.x, mouse.y);
             currentColor = currentColor.equals(Color.WHITE) ? Color.BLACK : Color.WHITE;
@@ -189,6 +197,9 @@ public class GamePanel extends JPanel implements Runnable {
         } else {
             g2.drawString("White's turn", 800,200);
         }
+        g2.setFont(new Font("TimesRoman", Font.PLAIN, 20));
+        g2.drawString(String.format("Black: %d", blackScore), 750, 300);
+        g2.drawString(String.format("White: %d", whiteScore), 850, 300);
 
         g2.dispose();
     }

@@ -18,6 +18,7 @@ public class Piece implements Cloneable {
     public int preCol, preRow;
     public Color color;
     public boolean firstMove = true;
+    public int value;
 
     public Piece(int col, int row, Color color) {
         this.col = col;
