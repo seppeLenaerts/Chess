@@ -119,7 +119,38 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     private boolean isLegalMove() {
-        return selectedPiece.legalMove(mouse.x / ChessBoard.SQUARE_SIZE, mouse.y / ChessBoard.SQUARE_SIZE);
+        int col = mouse.x / ChessBoard.SQUARE_SIZE;
+        int row = mouse.y / ChessBoard.SQUARE_SIZE;
+
+        if (pieceCollidesAndNotCapturing(row, col))
+            return false;
+        return selectedPiece.legalMove(col, row);
+    }
+
+    private boolean pieceCollidesAndNotCapturing(int row, int col) {
+        if (selectedPiece.preRow == row) {
+            if (col > selectedPiece.preCol) {
+                List<Piece> collidedPieces = pieces.stream().filter(p -> selectedPiece.preCol < p.col && p.col < col && p.row == row).toList();
+                if (!collidedPieces.isEmpty())
+                    return isCapturingPiece() == null;
+            } else if ( col < selectedPiece.preCol) {
+                List<Piece> collidedPieces = pieces.stream().filter(p -> selectedPiece.preCol > p.col && p.col > col && p.row == row).toList();
+                if (!collidedPieces.isEmpty())
+                    return isCapturingPiece() == null;
+            }
+        } else if (selectedPiece.preCol == col) {
+            if (row > selectedPiece.preRow) {
+                List<Piece> collidedPieces = pieces.stream().filter(p -> selectedPiece.preRow < p.row && p.row < row && p.col == col).toList();
+                if (!collidedPieces.isEmpty())
+                    return isCapturingPiece() == null;
+            } else {
+                List<Piece> collidedPieces = pieces.stream().filter(p -> selectedPiece.preRow > p.row && p.row > row && p.col == col).toList();
+                if (!collidedPieces.isEmpty())
+                    return isCapturingPiece() == null;
+            }
+        }
+
+        return false;
     }
 
     private Piece isCapturingPiece() {
