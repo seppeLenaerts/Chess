@@ -95,7 +95,7 @@ public class GamePanel extends JPanel implements Runnable {
         if (selectedPiece instanceof Pawn && capturingPiece != null) {
             legalMove = ((Pawn) selectedPiece).canTake(mouse.x / ChessBoard.SQUARE_SIZE, mouse.y / ChessBoard.SQUARE_SIZE);
         } else {
-            legalMove = isLegalMove();
+            legalMove = isLegalMove(capturingPiece);
         }
 
         if (capturingPiece != null && capturingPiece.color.equals(currentColor)) {
@@ -118,11 +118,13 @@ public class GamePanel extends JPanel implements Runnable {
         selectedPiece = null;
     }
 
-    private boolean isLegalMove() {
+    private boolean isLegalMove(Piece capturingPiece) {
         int col = mouse.x / ChessBoard.SQUARE_SIZE;
         int row = mouse.y / ChessBoard.SQUARE_SIZE;
 
         if (pieceCollidesAndNotCapturingHorizontally(row, col))
+            return false;
+        if (pieceCollidesAndNotCapturingDiagonally(row, col, capturingPiece))
             return false;
         return selectedPiece.legalMove(col, row);
     }
@@ -158,6 +160,75 @@ public class GamePanel extends JPanel implements Runnable {
             }
         }
 
+        return false;
+    }
+
+    private boolean pieceCollidesAndNotCapturingDiagonally(int row, int col, Piece capturingPiece) {
+        boolean collided = false;
+        List<Piece> list;
+        if (Math.abs(selectedPiece.preCol - col) == Math.abs(selectedPiece.preRow - row)) {
+            // Down & Left Diagonal
+            if (row > selectedPiece.preRow && col < selectedPiece.preCol) {
+                for (int i = 0; i < row - selectedPiece.preRow; i++) {
+                    selectedPiece.col -= 1;
+                    selectedPiece.row += 1;
+                    list = simPieces.stream().filter(piece -> (piece.getCol() == selectedPiece.col && piece.getRow() == selectedPiece.row) && piece != selectedPiece).toList();
+                    if (!list.isEmpty()) {
+                        if (list.get(0).equals(capturingPiece)) {
+                            return false;
+                        }
+                        collided = true;
+                        break;
+                    }
+                }
+                return collided;
+            // Down & Right Diagonal
+            } else if (row > selectedPiece.preRow && col > selectedPiece.preCol) {
+                for (int i = 0; i < row - selectedPiece.preRow; i++) {
+                    selectedPiece.col += 1;
+                    selectedPiece.row += 1;
+                    list = simPieces.stream().filter(piece -> (piece.getCol() == selectedPiece.col && piece.getRow() == selectedPiece.row) && piece != selectedPiece).toList();
+                    if (!list.isEmpty()) {
+                        if (list.get(0).equals(capturingPiece)) {
+                            return false;
+                        }
+                        collided = true;
+                        break;
+                    }
+                }
+                return collided;
+                // Up & Right Diagonal
+            } else if (row < selectedPiece.preRow && col > selectedPiece.preCol) {
+                for (int i = 0; i < selectedPiece.preRow - row; i++) {
+                    selectedPiece.col += 1;
+                    selectedPiece.row -= 1;
+                    list = simPieces.stream().filter(piece -> (piece.getCol() == selectedPiece.col && piece.getRow() == selectedPiece.row) && piece != selectedPiece).toList();
+                    if (!list.isEmpty()) {
+                        if (list.get(0).equals(capturingPiece)) {
+                            return false;
+                        }
+                        collided = true;
+                        break;
+                    }
+                }
+                return collided;
+            // Up & Left Diagonal
+            } else if (row < selectedPiece.preRow && col < selectedPiece.preCol) {
+                for (int i = 0; i < selectedPiece.preRow - row; i++) {
+                    selectedPiece.col -= 1;
+                    selectedPiece.row -= 1;
+                    list = simPieces.stream().filter(piece -> (piece.getCol() == selectedPiece.col && piece.getRow() == selectedPiece.row) && piece != selectedPiece).toList();
+                    if (!list.isEmpty()) {
+                        if (list.get(0).equals(capturingPiece)) {
+                            return false;
+                        }
+                        collided = true;
+                        break;
+                    }
+                }
+                return collided;
+            }
+        }
         return false;
     }
 

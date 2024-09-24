@@ -68,6 +68,8 @@ public class Piece implements Cloneable {
     }
 
     public void resetPosition() {
+        col = preCol;
+        row = preRow;
         this.x = getX();
         this.y = getY();
     }
