@@ -11,10 +11,12 @@ Lots of stuff to do.
     - [x] Bishop
     - [x] Queen
     - [x] King
-- [ ] Implement disallowing moves that jump over other pieces
-- [ ] Wait no the knight should do it 
+- [x] Implement disallowing moves that jump over other pieces
+- [x] Wait no the knight should do it 
 - [x] Allow capturing of other pieces
   - Preferably only of the enemy color
+- [ ] Promotion
+- [ ] En Passant
 - [ ] Castling
 - [ ] Checkmate recognition
 - [ ] Stalemate recognition
